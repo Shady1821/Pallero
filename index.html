@@ -231,8 +231,28 @@
       doc.text(`Fecha y hora: ${now}`, pageWidth - 20, footerY, { align: "right" });
 
       const nombreArchivo = `informe_${fecha || "sin_fecha"}.pdf`;
-      doc.save(nombreArchivo);
+      // En lugar de doc.save("Informe.pdf")
+      doc.save("Informe.pdf");
+      
+      // 🔽 NUEVO: generar Blob y compartirlo
+      const pdfBlob = doc.output("blob");
+      
+      if (navigator.share) {
+        const file = new File([pdfBlob], "Informe.pdf", { type: "application/pdf" });
+      
+        navigator.share({
+          title: "Informe de Traslado",
+          text: "Te envío el informe de traslado en PDF.",
+          files: [file],
+        })
+        .then(() => console.log("PDF compartido correctamente"))
+        .catch(err => console.log("Error al compartir:", err));
+      } else {
+        alert("Tu navegador no soporta compartir archivos directamente. El PDF fue descargado.");
+      }
+
     });
   </script>
 </body>
 </html>
+
