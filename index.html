@@ -188,6 +188,33 @@
       const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
       const pageWidth = doc.internal.pageSize.getWidth();
       const centerX = pageWidth / 2;
+      // --- Enviar datos a Google Sheets ---
+      const data = {
+        fecha,
+        origen,
+        destino,
+        titular,
+        cuit,
+        dte,
+        valorKm: parseFloat(document.getElementById("valorKm").value) || 0,
+        kmRecorridos: parseFloat(document.getElementById("kmRecorridos").value) || 0,
+        valorMovida: parseFloat(document.getElementById("valorMovida").value) || 0,
+        valorSeguro: parseFloat(document.getElementById("valorSeguro").value) || 0,
+        iva: parseFloat(document.getElementById("iva").value) || 0,
+        importeNeto: importeNeto.toFixed(2),
+        importeTotal: importeTotal.toFixed(2)
+      };
+      
+      fetch("https://script.google.com/macros/s/AKfycbyHBjEkH1ayvDLveDsJ716l1okGCSQZWGOCWrnIdUSyGYGwj3Q9ua2v9_LDHQE2MJKO/exec", {
+        method: "POST",
+        mode: "no-cors", // simplifica el envío
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(() => console.log("Datos guardados en Google Sheets"))
+      .catch(err => console.error("Error al guardar:", err));
 
       // --- CABECERA ---
       const logoURL = "https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png";
@@ -255,4 +282,5 @@
   </script>
 </body>
 </html>
+
 
